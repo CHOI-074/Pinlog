@@ -1,14 +1,17 @@
 // Cloudflare 배포 설정 — 웹사이트(PWA) 버전만 올린다.
 //
-// Cloudflare 대시보드(Workers & Pages → pinlog → 설정 → 빌드)에서:
-//   빌드 명령:  npm run build:web      ← npm run build 는 데스크탑 앱 빌드라 dist-web 이 안 생긴다
-//   배포 명령:  npx wrangler deploy
+// Cloudflare 대시보드의 배포 명령은 `npx wrangler deploy` 면 된다.
+// 대시보드 '빌드 명령'이 무엇이든(기본값 npm run build 는 데스크탑 앱 빌드라 dist-web 이 안 생긴다)
+// 아래 build.command 가 배포 직전에 웹사이트를 다시 빌드한다.
 //
 // 서버 코드는 없다. dist-web 의 정적 파일만 그대로 내보낸다.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "pinlog",
   "compatibility_date": "2026-09-16",
+  "build": {
+    "command": "npm run build:web"
+  },
   "assets": {
     "directory": "./dist-web",
     // 없는 주소로 들어와도 앱 첫 화면을 보여준다 (404 대신)
