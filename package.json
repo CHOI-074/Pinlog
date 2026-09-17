@@ -1,0 +1,68 @@
+{
+  "name": "pinlog",
+  "version": "0.1.0",
+  "description": "핀로그 — 미니 위젯 타임 트래커 & 일기장",
+  "main": "./out/main/index.js",
+  "author": "pinlog",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json && electron-vite build",
+    "preview": "electron-vite preview",
+    "build:mac": "npm run build && electron-builder --mac",
+    "build:win": "npm run build && electron-builder --win",
+    "build:web": "vite build --config vite.web.config.ts",
+    "check:ui": "electron-vite build && electron scripts/check-widget-fit.js && electron scripts/check-drag-regions.js && electron scripts/check-composer-window.js && electron scripts/check-input-flow.js && electron scripts/check-avatar.js && electron scripts/check-category.js && electron scripts/check-onboarding.js && electron scripts/check-onboarding-input.js && electron scripts/check-desktop-layout.js",
+    "check:rewards": "electron-vite build && vite build --config scripts/toss-mock/vite.config.ts && electron scripts/check-rewards.js",
+    "check:e2e": "electron-vite build && electron scripts/check-e2e.js && electron scripts/check-settings.js",
+    "dev:web": "vite --config vite.web.config.ts",
+    "preview:web": "vite preview --config vite.web.config.ts --host",
+    "icons": "electron scripts/make-icons.js",
+    "check:mobile": "npm run build:web && electron scripts/capture-mobile.js",
+    "dev:toss": "vite --config vite.toss.config.ts",
+    "build:toss": "vite build --config vite.toss.config.ts",
+    "build:toss:release": "vite build --config vite.toss.config.ts --mode release",
+    "ait:test": "npm run build:toss && ait build",
+    "ait:release": "npm run build:toss:release && ait build",
+    "art": "node scripts/avatar-art/generate.mjs"
+  },
+  "dependencies": {
+    "@apps-in-toss/web-framework": "^3.4.0",
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^34.0.0",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^3.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "zustand": "^5.0.0"
+  },
+  "build": {
+    "appId": "com.pinlog.app",
+    "productName": "PinLog",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "out/**/*",
+      "resources/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "핀로그 — 타임 트래커 & 일기장",
+  "short_name": "핀로그",
+  "description": "지금 뭘 하고 있었는지 한 줄로 남기고, 하루가 어떻게 쪼개졌는지 봅니다.",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "./?window=main",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0c1016",
+  "theme_color": "#0c1016",
+  "categories": ["productivity", "lifestyle"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "지금 기록하기",
+      "short_name": "기록",
+      "description": "입력창을 바로 엽니다",
+      "url": "./?window=main&compose=1",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "share_target": {
+    "action": "./",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

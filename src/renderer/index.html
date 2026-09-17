@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- viewport-fit=cover: 아이폰 노치/홈 인디케이터 영역까지 그리고, 안쪽 여백은 CSS safe-area 로 준다 -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"
+    />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f6f9" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c1016" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="핀로그" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!--
+      렌더러는 로컬 자원만 로드한다.
+      connect-src 'self' 는 서비스 워커가 자기 자원을 가져올 수 있게 하기 위함이다.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'"
+    />
+    <title>핀로그</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

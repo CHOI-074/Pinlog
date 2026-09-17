@@ -1,0 +1,46 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "pinlog-web",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "vite.web.config.ts",
+        "--port",
+        "5199",
+        "--strictPort"
+      ],
+      "port": 5199
+    },
+    {
+      "name": "pinlog-toss-bundle",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "preview",
+        "--config",
+        "vite.toss.config.ts",
+        "--port",
+        "5288",
+        "--strictPort"
+      ],
+      "port": 5288
+    },
+    {
+      "name": "pinlog-web-build",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "preview",
+        "--config",
+        "vite.web.config.ts",
+        "--port",
+        "5300",
+        "--strictPort"
+      ],
+      "port": 5300
+    }
+  ]
+}

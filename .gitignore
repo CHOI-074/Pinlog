@@ -1,0 +1,16 @@
+node_modules/
+out/
+dist/
+dist-web/
+release/
+.DS_Store
+*.log
+.env*
+
+*.tsbuildinfo
+
+# 앱인토스 번들 산출물
+*.ait
+
+# 이 컴퓨터에서만 쓰는 Claude Code 권한 설정
+.claude/settings.local.json
