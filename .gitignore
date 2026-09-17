@@ -14,3 +14,6 @@ release/
 
 # 이 컴퓨터에서만 쓰는 Claude Code 권한 설정
 .claude/settings.local.json
+
+# Cloudflare wrangler 로컬 캐시
+.wrangler/
