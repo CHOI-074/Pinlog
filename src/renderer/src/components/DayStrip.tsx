@@ -95,7 +95,7 @@ export function DayStrip({ pins, onMarkerClick }: Props): React.JSX.Element {
         {HOUR_LABELS.map((h) => (
           <span
             key={h}
-            className="absolute -translate-x-1/2 text-[10px] tabular-nums text-ink-500"
+            className={`absolute ${h === 0 || h === 24 ? '' : '-translate-x-1/2'} text-[10px] tabular-nums text-ink-500`}
             // 0시와 24시는 양 끝에 붙어 잘리므로 안쪽으로 당긴다
             style={{
               left: `${(h / 24) * 100}%`,

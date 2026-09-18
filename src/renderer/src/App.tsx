@@ -62,7 +62,11 @@ export default function App(): React.JSX.Element {
           else closeOnboarding()
           return true
         }
-        if (!draft.open) return false // 처리 안 함 → 미니앱 종료
+        if (!draft.open) {
+          const event = new Event('pinlog:back', { cancelable: true })
+          window.dispatchEvent(event)
+          return event.defaultPrevented
+        }
         closeComposer()
         return true
       })

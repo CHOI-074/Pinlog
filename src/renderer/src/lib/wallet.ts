@@ -20,7 +20,7 @@ export const REWARD_NAME = '리워드'
 export const DEFAULT_REWARD = 10
 
 /** 하루에 받을 수 있는 광고 수. 넘기면 버튼이 내일로 미뤄진다. */
-export const DAILY_AD_LIMIT = 10
+export const DAILY_AD_LIMIT = 3
 
 /** 기기 기준 날짜 (자정에 넘어간다) */
 export function dayKey(now: number): string {

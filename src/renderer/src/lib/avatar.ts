@@ -238,11 +238,11 @@ export const SLOTS: Slot[] = [
     items: [
       { id: 'human', label: '사람', level: 1 },
       {
-        id: 'cat', label: '고양이', level: 1, price: 60, animal: ART.species.cat,
+        id: 'cat', label: '고양이', level: 1, price: 30, animal: ART.species.cat,
         colors: { S: '#eca65a', s: '#d0853f', F: '#eca65a', f: '#c7773a', Z: '#fdf3e2', B: '#f5a3a0', M: '#8a5140', W: '#fdf3e2', w: '#e8d6bd' }
       },
       {
-        id: 'puppy', label: '강아지', level: 1, price: 60, animal: ART.species.puppy,
+        id: 'puppy', label: '강아지', level: 1, price: 30, animal: ART.species.puppy,
         colors: { S: '#cf975d', s: '#b17c48', F: '#cf975d', f: '#94603a', Z: '#fcf2e3', B: '#f0a594', M: '#8a5140', W: '#fcf2e3', w: '#e6d3ba' }
       }
     ]
@@ -322,8 +322,8 @@ export const SLOTS: Slot[] = [
       { id: 'peach', label: '피치', level: 8, style: 'cardigan', colors: { C: '#f2ab8d', c: '#f7c5ad', K: '#dc8f70', k: '#c7775a', i: '#d68668' } },
       { id: 'grape', label: '포도', level: 12, style: 'cardigan', colors: { C: '#a88fd6', c: '#c3acea', K: '#8b70bd', k: '#735aa3', i: '#8067b3' } },
       // 상점 — 컨셉 05·06. 책상 앞에 앉으면 같은 색 가디건으로 보인다(k 가 금색 여밈이 된다)
-      { id: 'star', label: '별빛 망토', level: 1, price: 50, style: 'cardigan', outfit: ART.body.outfit.star, colors: { C: '#343f6b', c: '#4a5790', K: '#262f55', k: '#e0b64c', i: '#b9a7dc' } },
-      { id: 'garden', label: '정원 원피스', level: 1, price: 50, style: 'cardigan', outfit: ART.body.outfit.garden, colors: { C: '#617f50', c: '#7d9c69', K: '#4c6a3f', k: '#d9ad45', i: '#f3ead6' } }
+      { id: 'star', label: '별빛 망토', level: 1, price: 30, style: 'cardigan', outfit: ART.body.outfit.star, colors: { C: '#343f6b', c: '#4a5790', K: '#262f55', k: '#e0b64c', i: '#b9a7dc' } },
+      { id: 'garden', label: '정원 원피스', level: 1, price: 30, style: 'cardigan', outfit: ART.body.outfit.garden, colors: { C: '#617f50', c: '#7d9c69', K: '#4c6a3f', k: '#d9ad45', i: '#f3ead6' } }
     ]
   },
   {
@@ -352,8 +352,8 @@ export const SLOTS: Slot[] = [
       { id: 'ribbon', label: '리본', level: 5, sprite: ART.hat.ribbon },
       { id: 'beanie', label: '털모자', level: 9, sprite: ART.hat.beanie },
       { id: 'crown', label: '왕관', level: 13, sprite: ART.hat.crown },
-      { id: 'star', label: '별빛 모자', level: 1, price: 30, sprite: ART.hat.star },
-      { id: 'bonnet', label: '꽃 보닛', level: 1, price: 30, sprite: ART.hat.bonnet }
+      { id: 'star', label: '별빛 모자', level: 1, price: 20, sprite: ART.hat.star },
+      { id: 'bonnet', label: '꽃 보닛', level: 1, price: 20, sprite: ART.hat.bonnet }
     ]
   },
   {
@@ -365,9 +365,9 @@ export const SLOTS: Slot[] = [
       { id: 'pen', label: '연필', level: 3, sprite: ART.prop.pen },
       { id: 'mug', label: '머그컵', level: 7, sprite: ART.prop.mug },
       { id: 'plant', label: '화분', level: 11, sprite: ART.prop.plant },
-      { id: 'moonbook', label: '달 일기장', level: 1, price: 20, sprite: ART.prop.moonbook },
-      { id: 'quill', label: '깃펜', level: 1, price: 20, sprite: ART.prop.quill },
-      { id: 'can', label: '물뿌리개', level: 1, price: 20, sprite: ART.prop.can }
+      { id: 'moonbook', label: '달 일기장', level: 1, price: 10, sprite: ART.prop.moonbook },
+      { id: 'quill', label: '깃펜', level: 1, price: 10, sprite: ART.prop.quill },
+      { id: 'can', label: '물뿌리개', level: 1, price: 10, sprite: ART.prop.can }
     ]
   },
   {

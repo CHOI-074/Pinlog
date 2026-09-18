@@ -1,13 +1,4 @@
-// 넓은 화면(데스크탑 메인 창 · 웹 브라우저)의 왼쪽 열 검사.
-//
-// 지키려는 사고:
-//   왼쪽 열이 창보다 길어지면 스크롤이 생겨야 하는데, flex 자식이 기본값대로
-//   '줄어들어서' 카드마다 납작해지고 overflow-hidden 이 내용을 잘랐다.
-//   캐릭터 머리, 하루 띠, '한 번에 기록' 버튼이 반쯤 잘려 보였다.
-//   모바일(세로 한 줄) 검사로는 안 잡힌다 — 넓은 화면에서만 옆으로 열이 갈린다.
-//
-// 음성 대조군: 고치기 전 상태(자식이 줄어듦)를 페이지에 되돌려 놓고
-// 이 검사가 실제로 그걸 잡는지도 확인한다. 검사가 죽어 있으면 의미가 없다.
+// 기록 중심 레이아웃: 카드 잘림, 스크롤, 빠른 기록 접근성 검사.
 const { app, BrowserWindow } = require('electron')
 const path = require('node:path')
 const fs = require('node:fs')
@@ -38,9 +29,9 @@ const MEASURE = `(() => {
   return {
     crushed,
     avatarClipped: svg.top < box.top - 1 || svg.bottom > box.bottom + 1,
-    asideScrolls: aside.scrollHeight > aside.clientHeight,
+    asideScrolls: document.querySelector('.journal-scroll').scrollHeight > document.querySelector('.journal-scroll').clientHeight,
     presetsReachable: (() => {
-      const b = [...aside.querySelectorAll('button')].find((x) => x.textContent.trim() === '업무')
+      const b = [...document.querySelectorAll('.quick-presets button')].find((x) => x.textContent.trim() === '업무')
       b.scrollIntoView({ block: 'center' })
       const r = b.getBoundingClientRect()
       const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
@@ -76,16 +67,16 @@ app.whenReady().then(async () => {
       t(`${w}x${h} '한 번에 기록' 버튼을 누를 수 있다`, m.presetsReachable)
 
       if (w === 980) {
-        t('980x700 에서는 왼쪽 열이 스크롤된다 (줄어드는 대신)', m.asideScrolls)
+        t('980x700 에서는 본문이 스크롤된다', m.asideScrolls)
         // 음성 대조군 — 고치기 전처럼 자식이 줄어들게 되돌리면 잡혀야 한다
         const bad = await win.webContents.executeJavaScript(`(() => {
-          for (const el of document.querySelector('aside').children) el.style.flexShrink = '1'
+          document.querySelector('.companion-card').style.height = '24px'; document.querySelector('.companion-card').style.overflow = 'hidden'
           return true
         })()`)
         void bad
         await sleep(200)
         const neg = await win.webContents.executeJavaScript(MEASURE)
-        t('음성 대조군: 줄어드는 옛 상태는 검사가 잡는다', neg.crushed.length > 0,
+        t('음성 대조군: 높이가 잘못 고정된 카드는 검사가 잡는다', neg.crushed.length > 0 || neg.avatarClipped,
           neg.crushed.slice(0, 3).join(', ') || '못 잡음')
       }
       win.destroy()

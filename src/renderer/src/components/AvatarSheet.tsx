@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { AvatarLook } from '@shared/types'
 import {
   HUMAN_ONLY_SLOTS,
@@ -21,6 +21,7 @@ import { Icon } from './Icon'
 import { PixelAvatar } from './PixelAvatar'
 
 interface Props {
+  initialTab?: 'skin' | 'shop'
   look: AvatarLook
   progress: Progress
   onChange: (slot: SlotId, id: string) => void
@@ -63,29 +64,43 @@ function Coin({ size = 12 }: { size?: number }): React.JSX.Element {
  * 칸마다 아이템 그림이 아니라 **그걸 입은 캐릭터**를 그린다. 왕관 그림 하나만
  * 보여주면 내 캐릭터에 얹혔을 때 어떤지 알 수 없다.
  */
-export function AvatarSheet({ look, progress, onChange, onClose }: Props): React.JSX.Element {
+export function AvatarSheet({ initialTab = 'skin', look, progress, onChange, onClose }: Props): React.JSX.Element {
   const wallet = usePinStore((s) => s.wallet)
   const adState = usePinStore((s) => s.adState)
   const shop = wallet !== null
+  const dialog = useRef<HTMLDivElement>(null)
+  const [now, setNow] = useState(Date.now())
+  useEffect(() => { const id = setInterval(() => setNow(Date.now()), 30_000); return () => clearInterval(id) }, [])
 
   // 피부부터 연다 — 처음 여는 사람이 가장 먼저 정하고 싶은 것이 '나'다
-  const [tab, setTab] = useState<Tab>('skin')
+  const [tab, setTab] = useState<Tab>(initialTab)
   /** 사려고 누른 상점 아이템 (확인 대기) */
   const [pending, setPending] = useState<{ slot: SlotId; item: AvatarItem } | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
 
   useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null
+    dialog.current?.focus()
     const onKey = (e: KeyboardEvent): void => {
       if (e.key === 'Escape') onClose()
+      if (e.key !== 'Tab') return
+      const nodes = Array.from(dialog.current?.querySelectorAll<HTMLElement>('button:not([disabled]), [href], input, [tabindex="0"]') ?? [])
+      const first = nodes[0]
+      const last = nodes[nodes.length - 1]
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === dialog.current)) {
+        e.preventDefault(); last?.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first?.focus()
+      }
     }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    return () => { window.removeEventListener('keydown', onKey); previous?.focus() }
   }, [onClose])
 
-  // 시트를 여는 순간 광고를 미리 불러 둔다 — 버튼을 누른 뒤 기다리게 하지 않는다
+  // 상점이나 구매 미리보기에서만 광고를 준비한다. 기본 꾸미기에는 광고가 없다.
   useEffect(() => {
-    if (shop) usePinStore.getState().prepareAd()
-  }, [shop])
+    if (shop && (tab === 'shop' || pending)) usePinStore.getState().prepareAd()
+  }, [shop, tab, pending])
 
   useEffect(() => {
     if (!notice) return
@@ -151,7 +166,7 @@ export function AvatarSheet({ look, progress, onChange, onClose }: Props): React
         )
 
   const humanOnlyBlocked = animal && tab !== 'shop' && HUMAN_ONLY_SLOTS.includes(tab)
-  const leftToday = wallet ? adsLeftToday(wallet, Date.now()) : 0
+  const leftToday = wallet ? adsLeftToday(wallet, now) : 0
 
   return (
     <div
@@ -163,7 +178,8 @@ export function AvatarSheet({ look, progress, onChange, onClose }: Props): React
         // relative: 닫기 버튼을 흐름에서 빼내 모서리에 고정한다.
         // 예전에는 버튼이 가로 공간을 먹어서, 좁은 화면에서 칭호와 XP 안내가
         // 세 줄로 접히고 레벨 칭호는 아예 잘려 사라졌다.
-        className="safe-bottom relative w-full max-w-md rounded-t-2xl bg-ink-850 p-3.5 shadow-[var(--shadow-float)] ring-1 ring-line sm:my-auto sm:rounded-2xl"
+        ref={dialog} tabIndex={-1} role="dialog" aria-modal="true" aria-label="캐릭터 꾸미기"
+        className="safe-bottom max-h-[90dvh] overflow-y-auto relative w-full max-w-md rounded-t-2xl bg-ink-850 p-3.5 shadow-[var(--shadow-float)] ring-1 ring-line sm:my-auto sm:rounded-2xl"
         style={{ ['--safe-pad-bottom' as string]: '0.875rem' }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -210,7 +226,7 @@ export function AvatarSheet({ look, progress, onChange, onClose }: Props): React
         </div>
 
         {/* 광고 보고 리워드 받기 */}
-        {wallet && (
+        {wallet && (tab === 'shop' || pending) && (
           <AdButton
             state={adState}
             leftToday={leftToday}
@@ -312,7 +328,7 @@ export function AvatarSheet({ look, progress, onChange, onClose }: Props): React
                 {pending.item.price}
                 {wallet.balance < (pending.item.price ?? 0) && (
                   <span className="text-ink-300">
-                    · {(pending.item.price ?? 0) - wallet.balance} 더 필요해요
+                    · {(pending.item.price ?? 0) - wallet.balance} 더 필요해요 (기본 보상 기준 광고 {Math.ceil(((pending.item.price ?? 0) - wallet.balance) / DEFAULT_REWARD)}회)
                   </span>
                 )}
               </p>
@@ -417,12 +433,13 @@ function AdButton({
         : state === 'failed'
           ? '광고를 불러오지 못했어요 · 다시 시도'
           : state === 'unsupported'
-            ? '토스 앱을 업데이트하면 광고를 볼 수 있어요'
+            ? '이 환경에서는 광고를 이용할 수 없어요'
             : '광고 준비 중…'
   const clickable = !done && (state === 'ready' || state === 'failed')
 
   return (
-    <div className="mb-3">
+    <div className="mb-3 rounded-xl border border-line p-3">
+      <p className="mb-2 text-xs text-ink-300">선택형 광고 · 꾸미기 전용 보상</p>
       <button
         type="button"
         disabled={!clickable}

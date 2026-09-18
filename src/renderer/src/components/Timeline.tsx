@@ -1,4 +1,4 @@
-import type { Pin } from '@shared/types'
+import { DEFAULT_PRESETS, type Pin } from '@shared/types'
 import { pinColor, tagColor } from '@/lib/category'
 import { dateLabel, hhmm, isSameDay } from '@/lib/time'
 import { usePinStore } from '@/store/usePinStore'
@@ -74,11 +74,11 @@ export function Timeline({ pins }: Props): React.JSX.Element {
                 <span className="relative flex h-7 w-px justify-center">
                   <span className="h-full w-px border-l border-dashed border-ink-600" />
                 </span>
-                <span className="text-[11px] text-ink-500">{formatGap(gap)} 비어 있음</span>
+                <span className="text-[11px] text-ink-500">기록 사이 {formatGap(gap)}</span>
               </div>
             )}
 
-            <div className="group relative flex items-start gap-3 rounded-lg py-2 pr-2 transition hover:bg-raise">
+            <div className="timeline-entry group relative flex items-start gap-3 rounded-lg py-2 pr-2 transition hover:bg-raise">
               {/* 시각 */}
               <span className="w-11 shrink-0 pt-px text-right text-[13px] tabular-nums text-ink-400">
                 {hhmm(pin.timestamp)}
@@ -137,7 +137,7 @@ export function Timeline({ pins }: Props): React.JSX.Element {
                       className="rounded px-1.5 py-0.5 text-[11px] font-medium"
                       style={{ color: tagColor(tag), background: `color-mix(in srgb, ${tagColor(tag)} 12%, transparent)` }}
                     >
-                      #{tag}
+                      #{DEFAULT_PRESETS.find(p => p.tag === tag)?.label ?? tag}
                     </span>
                   ))}
                 </div>
@@ -157,7 +157,7 @@ export function Timeline({ pins }: Props): React.JSX.Element {
                 </button>
                 <button
                   type="button"
-                  onClick={() => void removePin(pin.id)}
+                  onClick={() => { if (window.confirm('이 기록을 삭제할까요? 삭제하면 되돌릴 수 없어요.')) void removePin(pin.id) }}
                   title="삭제"
                   className="rounded-md p-1.5 text-ink-500 hover:bg-red-500/15 hover:text-red-300"
                 >

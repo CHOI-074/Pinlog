@@ -64,6 +64,8 @@ const click = (sel) => js(`(() => { const el = document.querySelector(${JSON.str
 const openSheet = async () => {
   await click('button[aria-label="캐릭터 꾸미기"]')
   await sleep(250)
+  await click('[data-tab="shop"]')
+  await sleep(250)
 }
 const state = () =>
   js(`(() => {
@@ -112,7 +114,7 @@ app.whenReady().then(async () => {
     let s = await waitFor((x) => x.ad === 'ready')
     t('지갑이 0 으로 보인다', s.wallet === 0, String(s.wallet))
     t('상점·캐릭터 탭이 있다', s.tabs.includes('shop') && s.tabs.includes('species'), s.tabs.join(','))
-    t('시트를 열면 광고를 미리 불러 둔다', s.ad === 'ready', s.ad)
+    t('상점을 열면 광고를 미리 불러 둔다', s.ad === 'ready', s.ad)
     t('출시 빌드라도 샌드박스에서는 테스트 광고 ID', s.calls.every(([, id]) => id === TEST_ID) && s.calls.length > 0, JSON.stringify(s.calls))
     t('테스트 광고 표시가 보인다', s.testBadge)
 
@@ -126,7 +128,7 @@ app.whenReady().then(async () => {
     s = await state()
     t('파는 물건을 누르면 사기 확인이 뜬다', s.confirm)
     t('리워드가 모자라면 [사기]가 막힌다', s.buyDisabled === true)
-    const previewCat = await js(`document.querySelector('[data-confirm]')?.textContent.includes('60 더 필요해요')`)
+    const previewCat = await js(`document.querySelector('[data-confirm]')?.textContent.includes('30 더 필요해요')`)
     t('얼마나 더 필요한지 알려준다', previewCat)
 
     // 광고 한 편
@@ -138,9 +140,9 @@ app.whenReady().then(async () => {
     t('보여준 뒤 다음 광고를 다시 불러 둔다 (load → show → load)',
       s.calls.map((c) => c[0]).join(',') === 'load,show,load', s.calls.map((c) => c[0]).join(','))
 
-    // 다섯 편 더 → 60 → 고양이 사기
-    for (let i = 0; i < 5; i++) s = await watchOnce()
-    t('여섯 편이면 60', s.wallet === 60, String(s.wallet))
+    // 두 편 더 → 30 → 고양이 사기
+    for (let i = 0; i < 2; i++) s = await watchOnce()
+    t('세 편이면 30', s.wallet === 30, String(s.wallet))
     await click('[data-slot="species"][data-item="cat"]')
     await sleep(100)
     s = await state()
@@ -158,7 +160,7 @@ app.whenReady().then(async () => {
     await reopen(TOSS)
     await openSheet()
     s = await waitFor((x) => x.ad === 'ready')
-    t('다시 열어도 잔액·오늘 횟수가 그대로', s.wallet === 0 && JSON.parse(s.stored).adsToday === 6)
+    t('다시 열어도 잔액·오늘 횟수가 그대로', s.wallet === 0 && JSON.parse(s.stored).adsToday === 3)
     await click('[data-tab="species"]')
     await sleep(100)
     const catLocked = await js(`document.querySelector('[data-item="cat"]').dataset.locked`)
@@ -208,13 +210,13 @@ app.whenReady().then(async () => {
     t('[다시 시도]로 다시 불러온다', s.ad === 'ready', s.ad)
 
     /* ── 7. 하루 한도 ───────────────────────────────────────── */
-    await boot(TOSS, { storage: { 'pinlog:wallet': JSON.stringify({ balance: 30, owned: [], day: today, adsToday: 10, earned: 100 }) } })
+    await boot(TOSS, { storage: { 'pinlog:wallet': JSON.stringify({ balance: 30, owned: [], day: today, adsToday: 3, earned: 100 }) } })
     await openSheet()
     await sleep(300)
     s = await state()
-    t('하루 10회를 채우면 버튼이 막힌다', s.adDisabled === true && s.adText.includes('다 받았어요'), s.adText)
+    t('하루 3회를 채우면 버튼이 막힌다', s.adDisabled === true && s.adText.includes('다 받았어요'), s.adText)
     t('한도를 채웠으면 광고를 불러오지도 않는다', s.calls.length === 0, JSON.stringify(s.calls))
-    await boot(TOSS, { storage: { 'pinlog:wallet': JSON.stringify({ balance: 30, owned: [], day: '2000-01-01', adsToday: 10, earned: 100 }) } })
+    await boot(TOSS, { storage: { 'pinlog:wallet': JSON.stringify({ balance: 30, owned: [], day: '2000-01-01', adsToday: 3, earned: 100 }) } })
     await openSheet()
     s = await waitFor((x) => x.ad === 'ready')
     t('날짜가 바뀌면 다시 볼 수 있다 (잔액은 그대로)', s.ad === 'ready' && s.wallet === 30, `${s.ad} ${s.wallet}`)

@@ -66,6 +66,8 @@ async function open({ pins = [], avatar = null, theme = 'light' } = {}) {
   )
   await win.loadFile(file, { search: '?window=main' })
   await sleep(1000)
+  await win.webContents.executeJavaScript(`Array.from(document.querySelectorAll('.journal-nav button')).find(b => b.textContent.trim() === '작은 작업실').click()`)
+  await sleep(150)
   return win
 }
 

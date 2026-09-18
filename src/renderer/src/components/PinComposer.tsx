@@ -37,10 +37,14 @@ export function PinComposer({ standalone = false }: Props): React.JSX.Element | 
 
   const textRef = useRef<HTMLTextAreaElement>(null)
   const [tagInput, setTagInput] = useState('')
+  const [saving, setSaving] = useState(false)
+  const savingRef = useRef(false)
+  const [saveError, setSaveError] = useState('')
 
   useEffect(() => {
     if (!draft.open) return
     setTagInput('')
+    setSaveError('')
     // 창이 뜨고 포커스를 받은 뒤에 줘야 확실히 먹는다
     const id = setTimeout(() => textRef.current?.focus(), 60)
     return () => clearTimeout(id)
@@ -58,7 +62,15 @@ export function PinComposer({ standalone = false }: Props): React.JSX.Element | 
 
   if (!draft.open) return null
 
-  const save = (): void => void commitDraft()
+  const save = async (): Promise<void> => {
+    if (savingRef.current) return
+    savingRef.current = true
+    setSaving(true)
+    setSaveError('')
+    try { await commitDraft() }
+    catch { setSaveError('저장하지 못했어요. 입력한 내용은 그대로 있으니 다시 시도해 주세요.') }
+    finally { savingRef.current = false; setSaving(false) }
+  }
 
   const onTextKeyDown = (e: React.KeyboardEvent): void => {
     // isComposing: 한글 조합 중 Enter 는 글자 확정이므로 저장하면 안 된다
@@ -316,13 +328,15 @@ export function PinComposer({ standalone = false }: Props): React.JSX.Element | 
           스크롤 아래로 밀려 사라지지 않게 카드 하단에 붙여둔다.
         */}
         <div className="sticky bottom-0 -mx-3.5 -mb-3.5 mt-3 rounded-b-2xl bg-ink-850 px-3.5 pt-2.5 pb-3.5">
+          {saveError && <p role="alert" className="mb-2 text-xs text-ink-300">{saveError}</p>}
           <button
             type="button"
-            onClick={save}
+            onClick={() => void save()}
+            disabled={saving}
             className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-accent py-2.5 text-[14px] font-medium text-ink-950 transition hover:brightness-110 active:scale-[0.99]"
           >
             <Icon name="check" size={16} strokeWidth={2.4} />
-            저장
+            {saving ? '저장 중…' : '저장'}
           </button>
         </div>
       </div>

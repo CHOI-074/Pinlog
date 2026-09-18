@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { DEFAULT_PRESETS } from '@shared/types'
 import { tagColor } from '@/lib/category'
 import { usePinStore } from '@/store/usePinStore'
@@ -18,6 +19,7 @@ interface Props {
  * 잘못 눌러도 타임라인에서 바로 지울 수 있어 되돌리기 비용이 낮다.
  */
 export function QuickPresets({ onRecorded }: Props): React.JSX.Element {
+  const [saving, setSaving] = useState(false)
   const { quickAdd } = usePinStore.getState()
 
   return (
@@ -30,16 +32,19 @@ export function QuickPresets({ onRecorded }: Props): React.JSX.Element {
      *
      * 위쪽 하이라이트(from-glass-edge)는 빛이 유리 윗면에 걸린 느낌을 만든다.
      */
-    <div className="glass glass-sheen relative overflow-hidden rounded-xl px-3 py-2.5">
-      <div className="mb-2 text-[11px] text-ink-400">한 번에 기록</div>
+    <div className="quick-presets">
+      <div className="mb-2 text-[11px] text-ink-400">한 번에 남기는 지금</div>
       <div className="grid grid-cols-4 gap-1.5">
         {DEFAULT_PRESETS.map((preset) => (
           <button
             key={preset.tag}
             type="button"
-            onClick={() => {
-              void quickAdd(preset.label, preset.tag)
-              onRecorded(preset.label)
+            disabled={saving}
+            onClick={async () => {
+              setSaving(true)
+              try { await quickAdd(preset.label, preset.tag); onRecorded(`'${preset.label}' 기록했어요`) }
+              catch { onRecorded('저장하지 못했어요. 다시 시도해 주세요') }
+              finally { setSaving(false) }
             }}
             // 아이콘에 활동 색을 입혀 여기서 색-활동 짝을 배우게 한다.
             // 타임라인·하루 띠·시계가 전부 같은 색을 쓰므로 한 번 익히면 계속 통한다.

@@ -143,7 +143,10 @@ app.whenReady().then(async () => {
     t('태그 칩도 같은 색', chipWork && chipWork.color === work,
       chipWork ? `${chipWork.color} vs ${work}` : '칩 없음')
 
-    t('시계 마커도 색이 갈린다', new Set(d.dial).size >= 4, `${new Set(d.dial).size}색`)
+    await win.webContents.executeJavaScript(`Array.from(document.querySelectorAll('.journal-nav button')).find(b => b.textContent.trim() === '작은 작업실').click()`)
+    await sleep(150)
+    const studio = await win.webContents.executeJavaScript(COLLECT)
+    t('작업실 시계 마커도 색이 갈린다', new Set(studio.dial).size >= 4, `${new Set(studio.dial).size}색`)
 
     const todayBar = d.weekBars.find((b) => b.length > 1)
     t('주간 막대가 활동별로 쌓인다', !!todayBar && new Set(todayBar).size >= 4,

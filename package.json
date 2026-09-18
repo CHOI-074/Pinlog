@@ -24,7 +24,8 @@
     "build:toss:release": "vite build --config vite.toss.config.ts --mode release",
     "ait:test": "npm run build:toss && ait build",
     "ait:release": "npm run build:toss:release && ait build",
-    "art": "node scripts/avatar-art/generate.mjs"
+    "art": "node scripts/avatar-art/generate.mjs",
+    "check:journal": "npm run build:web && electron scripts/check-journal.js"
   },
   "dependencies": {
     "@apps-in-toss/web-framework": "^3.4.0",

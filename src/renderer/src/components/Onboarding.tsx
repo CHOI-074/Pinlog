@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { DEFAULT_LOOK, DEFAULT_PRESETS, type AvatarLook } from '@shared/types'
 import { tagColor } from '@/lib/category'
-import { isDesktop } from '@/lib/bridge'
 import { usePinStore } from '@/store/usePinStore'
 import { Icon } from './Icon'
 import { PixelAvatar } from './PixelAvatar'
@@ -23,10 +22,7 @@ import { PixelAvatar } from './PixelAvatar'
 const PAGES = [
   {
     title: '지금 하는 일을\n한 번에 기록해요',
-    body: `업무·회의·휴식·개인공부를 누르면 지금 시각으로 바로 남아요. 길게 적고 싶을 땐 ${
-      // 데스크탑 메인 창에는 모바일의 떠 있는 + 버튼이 없다 — 시계를 누르거나 디지털 뷰의 + 를 쓴다
-      isDesktop ? '시계나 + 를' : '+ 를'
-    } 눌러요.`,
+    body: '업무·회의·휴식·개인공부를 누르면 지금 시각으로 바로 남아요. 길게 적고 싶을 땐 지금 기록하기를 눌러요.',
     Visual: QuickRecordVisual
   },
   {
@@ -36,7 +32,7 @@ const PAGES = [
   },
   {
     title: '기록할수록\n캐릭터가 자라요',
-    body: '기록 하나에 경험치 10. 레벨이 오르면 머리·안경·모자, 직장인 컨셉까지 꾸밀 수 있어요.',
+    body: '작은 작업실에서 캐릭터를 꾸며보세요. 기록으로 경험치를 쌓으면 새로운 옷과 소품이 열려요.',
     Visual: CharacterVisual
   }
 ] as const
